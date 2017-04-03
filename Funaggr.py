@@ -30,6 +30,7 @@ class Funaggr():
 
             if i < self.n - 1:
                 x.setdefault(key, [dict(), Node()])
+                x[key][1].update(log)
                 x = x[key][0]
             else:
                 x.setdefault(key, [])
