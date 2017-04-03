@@ -3,7 +3,7 @@ class Node():
     def __init__(self, fstats=[], names=[]):
         self.fstats = fstats
         self.stat = dict()
-        for f in range(len(fstats)):
+        for f in names:
             self.stat[f] = None
         self.names = names
 
@@ -12,8 +12,16 @@ class Node():
         #v_0 - extract stat from log
         #v_1 - update stat from Node by v[0](log)
 
-        for k, v in enumerate(self.fstats):
-            if not self.stat[k]:
+        for k in range(len(self.fstats)):
+            name = self.names[k]
+            v = self.fstats[k]
+            if not self.stat[name]:
                 self.stat[k] = v[0](log)
             else:
-                self.stat[k] = v[1](self.stat[k], v[0](log))
+                self.stat[name] = v[1](self.stat[name], v[0](log))
+
+    def __str__(self):
+        strs = []
+        for name in self.names:
+            strs.append(name + ': ' + str(self.stat[name]))
+        return ';'.join(strs)
