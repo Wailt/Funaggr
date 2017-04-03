@@ -1,6 +1,8 @@
 from copy import deepcopy
 from pprint import pprint
 
+from Node import Node
+
 
 class Funaggr():
     def __init__(self, features=[], names=[]):
@@ -27,8 +29,8 @@ class Funaggr():
             key = (self.names[i] + ": " + str(feat)) if len(self.names) == self.n and self.rename else str(feat)
 
             if i < self.n - 1:
-                x.setdefault(key, dict())
-                x = x[key]
+                x.setdefault(key, [dict(), Node()])
+                x = x[key][0]
             else:
                 x.setdefault(key, [])
                 x[key].append(log)
@@ -44,7 +46,7 @@ class Funaggr():
     def __app(self, f, deep=0, y=None):
         for key in y:
             if deep < self.n - 1:
-                self.__app(f, deep=deep + 1, y=y[key])
+                self.__app(f, deep=deep + 1, y=y[key][0])
             else:
                 y[key] = f(y[key])
 
@@ -56,11 +58,16 @@ class Funaggr():
         if not data:
             data = self.data
         result = []
-        if deep < self.n:
+
+        if deep < self.n - 1:
+            for key in data:
+                result += self.to_list(data=data[key][0], deep=deep + 1)
+        elif deep == self.n - 1:
             for key in data:
                 result += self.to_list(data=data[key], deep=deep + 1)
         else:
             return data
+
         return result
 
     def merge(self, aggs):
